@@ -1,0 +1,23 @@
+{{> header}}
+{{> menu}}
+
+<h1 class="title">Pel·lícules</h1>
+
+<div class="card-grid">
+  {{#each movies}}
+    <div class="card">
+      <h2>{{title}}</h2>
+      <p><strong>Any:</strong> {{release_year}}</p>
+      <p><strong>Duració:</strong> {{length}} min</p>
+
+      <h3>Actors</h3>
+      <ul class="list">
+        {{#each actors}}
+          <li>{{first_name}} {{last_name}}</li>
+        {{/each}}
+      </ul>
+    </div>
+  {{/each}}
+</div>
+
+{{> footer}}

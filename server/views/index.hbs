@@ -1,0 +1,29 @@
+{{> header}}
+{{> menu}}
+
+<h1 class="title">Inici</h1>
+
+<section class="section">
+  <h2>Primeres 5 pel·lícules</h2>
+
+  <div class="card-grid">
+    {{#each movies}}
+      <div class="card">
+        <h2>{{title}}</h2>
+        <p><strong>Any:</strong> {{release_year}}</p>
+      </div>
+    {{/each}}
+  </div>
+</section>
+
+<section class="section">
+  <h2>Categories</h2>
+
+  <ul class="list">
+    {{#each categories}}
+      <li>{{name}}</li>
+    {{/each}}
+  </ul>
+</section>
+
+{{> footer}}
