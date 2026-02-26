@@ -17,7 +17,7 @@ if (!isProxmox) {
     host: '127.0.0.1',
     port: 3306,
     user: 'root',
-    password: 'root',
+    password: '1234',
     database: 'sakila'
   });
 } else {
@@ -126,6 +126,36 @@ app.get('/movies', async (req, res) => {
     res.status(500).send('Error consultant la base de dades');
   }
 });
+
+/* ---------------------------------------------------------
+   RUTA: /movies/:id
+   Detall d'una pel·lícula
+--------------------------------------------------------- */
+app.get('/movies/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const movie = await db.query(`
+      SELECT *
+      FROM film
+      WHERE film_id = ?;
+    `, [id]);
+
+    if (movie.length === 0) {
+      return res.status(404).send("Pel·lícula no trobada");
+    }
+
+    res.render('movie', {
+      common: commonData,
+      movie: movie[0]
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error consultant la base de dades");
+  }
+});
+
 
 /* ---------------------------------------------------------
    RUTA: /customers
