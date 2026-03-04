@@ -1,0 +1,41 @@
+{{> header}}
+{{> menu}}
+
+<h1>Editar pel·lícula</h1>
+
+<form action="/editarPeli" method="POST">
+  <input type="hidden" name="film_id" value="{{movie.film_id}}">
+
+  <label>Títol:</label>
+  <input type="text" name="title" value="{{movie.title}}" required>
+
+  <label>Descripció:</label>
+  <textarea name="description">{{movie.description}}</textarea>
+
+  <label>Any:</label>
+  <input type="number" name="release_year" value="{{movie.release_year}}">
+
+  <label>Duració (minuts):</label>
+  <input type="number" name="length" value="{{movie.length}}">
+
+  <label>Idioma:</label>
+  <select name="language_id">
+    {{#each languages}}
+      <option value="{{this.language_id}}"
+        {{#if (eq this.language_id ../movie.language_id)}}selected{{/if}}>
+        {{this.name}}
+      </option>
+    {{/each}}
+  </select>
+
+  <button type="submit">Guardar canvis</button>
+</form>
+
+<form action="/esborrarPeli" method="POST" style="margin-top:20px;">
+  <input type="hidden" name="film_id" value="{{movie.film_id}}">
+  <button type="submit" style="color:red;">Esborrar pel·lícula</button>
+</form>
+
+<a href="/movie/{{movie.film_id}}">← Cancel·lar</a>
+
+{{> footer}}

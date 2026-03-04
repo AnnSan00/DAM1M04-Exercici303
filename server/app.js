@@ -15,12 +15,13 @@ const db = new MySQL();
 if (!isProxmox) {
   db.init({
     host: '127.0.0.1',
-    port: 3306,
-    user: 'root',
+    port: 3307,
+    user: 'super',
     password: '1234',
     database: 'sakila'
   });
-} else {
+}
+ else {
   db.init({
     host: '127.0.0.1',
     port: 3307,   // IMPORTANT: túnel SSH
@@ -100,7 +101,7 @@ app.get('/', async (req, res) => {
 app.get('/movies', async (req, res) => {
   try {
     const films = await db.query(`
-      SELECT film_id, title, description, release_year
+      SELECT film_id, title, description, release_year, length
       FROM film
       LIMIT 15;
     `);
@@ -156,6 +157,129 @@ app.get('/movies/:id', async (req, res) => {
   }
 });
 
+/* ---------------------------------------------------------
+   RUTA: /movie/add
+   Formulari per afegir pel·lícula
+--------------------------------------------------------- */
+app.get('/movie/add', async (req, res) => {
+  try {
+    const languages = await db.query(`
+      SELECT language_id, name
+      FROM language;
+    `);
+
+    res.render('movieAdd', {
+      common: commonData,
+      languages
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error consultant la base de dades");
+  }
+});
+
+/* ---------------------------------------------------------
+   RUTA: POST /afegirPeli
+   Crear pel·lícula
+--------------------------------------------------------- */
+app.post('/afegirPeli', async (req, res) => {
+  try {
+    const title = req.body.title;
+    const description = req.body.description;
+    const release_year = req.body.release_year;
+    const length = req.body.length;
+    const language_id = req.body.language_id;
+
+    await db.query(`
+      INSERT INTO film (title, description, release_year, length, language_id)
+      VALUES (?, ?, ?, ?, ?)
+    `, [title, description, release_year, length, language_id]);
+
+    res.redirect('/movies');
+  } catch (err) {
+    console.error(err);
+    return res.status(500).send('Error afegint pel·lícula');
+  }
+});
+
+/* ---------------------------------------------------------
+   RUTA: /movie/edit/:id
+   Formulari per editar pel·lícula
+--------------------------------------------------------- */
+app.get('/movie/edit/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const movie = await db.query(`
+      SELECT *
+      FROM film
+      WHERE film_id = ?;
+    `, [id]);
+
+    if (movie.length === 0) {
+      return res.status(404).send("Pel·lícula no trobada");
+    }
+
+    const languages = await db.query(`
+      SELECT language_id, name
+      FROM language;
+    `);
+
+    res.render('movieEdit', {
+      common: commonData,
+      movie: movie[0],
+      languages
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error consultant la base de dades");
+  }
+});
+
+/* ---------------------------------------------------------
+   RUTA: POST /editarPeli
+   Actualitzar pel·lícula
+--------------------------------------------------------- */
+app.post('/editarPeli', async (req, res) => {
+  try {
+    const { film_id, title, description, release_year, length, language_id } = req.body;
+
+    await db.query(`
+      UPDATE film
+      SET title = ?, description = ?, release_year = ?, length = ?, language_id = ?
+      WHERE film_id = ?;
+    `, [title, description, release_year, length, language_id, film_id]);
+
+    res.redirect('/movies/' + film_id);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error editant la pel·lícula");
+  }
+});
+
+/* ---------------------------------------------------------
+   RUTA: POST /esborrarPeli
+   Esborrar pel·lícula
+--------------------------------------------------------- */
+app.post('/esborrarPeli', async (req, res) => {
+  try {
+    const { film_id } = req.body;
+
+    await db.query(`
+      DELETE FROM film
+      WHERE film_id = ?;
+    `, [film_id]);
+
+    res.redirect('/movies');
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error esborrant la pel·lícula");
+  }
+});
 
 /* ---------------------------------------------------------
    RUTA: /customers

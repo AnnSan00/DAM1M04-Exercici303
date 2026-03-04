@@ -1,0 +1,32 @@
+{{> header}}
+{{> menu}}
+
+<h1>Afegir nova pel·lícula</h1>
+
+<form action="/afegirPeli" method="POST">
+
+  <label>Títol:</label>
+  <input type="text" name="title" required>
+
+  <label>Descripció:</label>
+  <textarea name="description"></textarea>
+
+  <label>Any:</label>
+  <input type="number" name="release_year">
+
+  <label>Duració (minuts):</label>
+  <input type="number" name="length">
+
+  <label>Idioma:</label>
+  <select name="language_id">
+    {{#each languages}}
+      <option value="{{this.language_id}}">{{this.name}}</option>
+    {{/each}}
+  </select>
+
+  <button type="submit">Afegir pel·lícula</button>
+</form>
+
+<a href="/movies">← Cancel·lar</a>
+
+{{> footer}}
