@@ -137,9 +137,12 @@ app.get('/movies/:id', async (req, res) => {
     const id = req.params.id;
 
     const movie = await db.query(`
-      SELECT *
-      FROM film
-      WHERE film_id = ?;
+      SELECT 
+        f.*, 
+        l.name AS language_name
+      FROM film f
+      JOIN language l ON f.language_id = l.language_id
+      WHERE f.film_id = ?;
     `, [id]);
 
     if (movie.length === 0) {
@@ -156,6 +159,7 @@ app.get('/movies/:id', async (req, res) => {
     res.status(500).send("Error consultant la base de dades");
   }
 });
+
 
 /* ---------------------------------------------------------
    RUTA: /movie/add
