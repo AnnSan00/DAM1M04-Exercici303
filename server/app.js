@@ -15,8 +15,8 @@ const db = new MySQL();
 if (!isProxmox) {
   db.init({
     host: '127.0.0.1',
-    port: 3307,
-    user: 'super',
+    port: 3306,
+    user: 'root',
     password: '1234',
     database: 'sakila'
   });
@@ -24,7 +24,7 @@ if (!isProxmox) {
  else {
   db.init({
     host: '127.0.0.1',
-    port: 3307,   // IMPORTANT: túnel SSH
+    port: 3306,   // IMPORTANT: túnel SSH
     user: 'super',
     password: '1234',
     database: 'sakila'
