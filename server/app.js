@@ -12,15 +12,17 @@ const isProxmox = !!process.env.PM2_HOME;
 
 // Iniciar connexió MySQL
 const db = new MySQL();
+// local
 if (!isProxmox) {
   db.init({
     host: '127.0.0.1',
-    port: 3306,
-    user: 'root',
+    port: 3307,
+    user: 'super',
     password: '1234',
     database: 'sakila'
   });
 }
+//proxmox
  else {
   db.init({
     host: '127.0.0.1',
@@ -63,12 +65,13 @@ const commonData = JSON.parse(
 --------------------------------------------------------- */
 app.get('/', async (req, res) => {
   try {
+    // Pel·lícules
     const movies = await db.query(`
       SELECT film_id, title, release_year
       FROM film
       LIMIT 5;
     `);
-
+// Categories
     const categories = await db.query(`
       SELECT category_id, name
       FROM category
@@ -100,12 +103,13 @@ app.get('/', async (req, res) => {
 --------------------------------------------------------- */
 app.get('/movies', async (req, res) => {
   try {
+    // Pel·lícules (FIlM)
     const films = await db.query(`
       SELECT film_id, title, description, release_year, length
       FROM film
       LIMIT 15;
     `);
-
+//actores
     for (const film of films) {
       const actors = await db.query(`
         SELECT a.first_name, a.last_name
@@ -116,7 +120,7 @@ app.get('/movies', async (req, res) => {
 
       film.actors = actors;
     }
-
+    // 
     res.render('movies', {
       common: commonData,
       movies: films
@@ -194,7 +198,7 @@ app.post('/afegirPeli', async (req, res) => {
     const release_year = req.body.release_year;
     const length = req.body.length;
     const language_id = req.body.language_id;
-
+// Insertar nueva película
     await db.query(`
       INSERT INTO film (title, description, release_year, length, language_id)
       VALUES (?, ?, ?, ?, ?)
