@@ -333,28 +333,6 @@ app.get('/customers', async (req, res) => {
   }
 });
 
-/* ---------------------------------------------------------
-   RUTA: /informe
-   Estructura obligatòria
---------------------------------------------------------- */
-app.get('/informe', async (req, res) => {
-  try {
-    // Podem posar, per exemple, un resum de totals
-    const totalMovies = await db.query('SELECT COUNT(*) as total FROM film');
-    const totalCustomers = await db.query('SELECT COUNT(*) as total FROM customer');
-
-    res.render('informe', {
-      common: commonData,
-      stats: {
-        movies: totalMovies[0].total,
-        customers: totalCustomers[0].total
-      }
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error generant l informe');
-  }
-});
 
 // Start server
 const httpServer = app.listen(port, () => {
