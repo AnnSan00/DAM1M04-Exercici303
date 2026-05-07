@@ -1,132 +1,191 @@
-/* ------------------------------ */
-/* Tipografia i base visual       */
-/* ------------------------------ */
+:root {
+    --bg: #0f172a;
+    --bg-soft: #111827;
+    --card: #020617;
+    --accent: #38bdf8;
+    --accent-soft: rgba(56, 189, 248, 0.15);
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --radius: 14px;
+    --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.8);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
 body {
-  font-family: "Segoe UI", Roboto, Arial, sans-serif;
-  background: #141414; /* Fons Netflix */
-  margin: 0;
-  padding: 0;
-  color: #e5e5e5;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: radial-gradient(circle at top, #1e293b 0, #020617 55%);
+    color: var(--text);
+    min-height: 100vh;
+    margin: 0;
 }
 
-.container {
-  width: 90%;
-  max-width: 1200px;
-  margin: auto;
-  padding-bottom: 40px;
-}
-
-a {
-  color: #f3dede;
-}
-
-/* ------------------------------ */
-/* Capçalera i menú estil Netflix */
-/* ------------------------------ */
+/* ----------------------------- */
+/* TOPBAR + MENÚ */
+/* ----------------------------- */
 
 .topbar {
-  background: #000;
-  color: white;
-  padding: 18px 25px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 3px solid #e50914; /* Vermell Netflix */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    background: #0f172a;
+
+    border-bottom: 3px solid rgba(148,163,184,0.25);
+
+    padding: 12px 40px;
+    height: 60px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+  
+.logo {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
 }
 
-.logo {
-  font-size: 1.6rem;
-  font-weight: bold;
-  color: #e50914;
+.menu {
+    display: flex;
+    gap: 14px;
 }
 
 .menu a {
-  color: #e5e5e5;
-  text-decoration: none;
-  margin-left: 25px;
-  font-weight: 500;
-  font-size: 1.1rem;
-  transition: 0.2s;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 14px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background: rgba(15,23,42,0.6);
+    transition: all 0.2s ease;
 }
 
 .menu a:hover {
-  color: #e50914;
+    color: var(--accent);
+    border-color: rgba(56,189,248,0.5);
+    background: rgba(15,23,42,0.9);
 }
 
-/* ------------------------------ */
-/* Títols i seccions              */
-/* ------------------------------ */
+/* ----------------------------- */
+/* CONTENEDOR GENERAL */
+/* ----------------------------- */
+
+.container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
 
 .title {
-  margin-top: 35px;
-  font-size: 2.2rem;
-  text-align: left;
-  color: #fff;
-  border-left: 5px solid #e50914;
-  padding-left: 12px;
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: var(--accent);
+    text-align: center;
 }
+
+/* ----------------------------- */
+/* SECCIONES */
+/* ----------------------------- */
 
 .section {
-  margin-top: 40px;
+    margin-bottom: 40px;
 }
 
-/* ------------------------------ */
-/* Targetes estil Netflix         */
-/* ------------------------------ */
+.section h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: var(--text);
+}
+
+/* ----------------------------- */
+/* GRID DE TARJETAS */
+/* ----------------------------- */
 
 .card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 25px;
-  margin-top: 25px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
 }
 
+/* ----------------------------- */
+/* TARJETAS */
+/* ----------------------------- */
+
 .card {
-  background: #1f1f1f;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  transition: 0.25s;
-  border: 1px solid #2a2a2a;
+    background: radial-gradient(circle at top left, rgba(56,189,248,0.12), rgba(15,23,42,1));
+    border-radius: var(--radius);
+    border: 1px solid rgba(148,163,184,0.25);
+    box-shadow: var(--shadow-soft);
+    padding: 20px;
+    transition: transform 0.2s ease;
 }
 
 .card:hover {
-  transform: scale(1.03);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+    transform: scale(1.03);
 }
 
-.card h2, .card h3 {
-  margin-top: 0;
-  color: #fff;
+.card h2 {
+    font-size: 18px;
+    margin-bottom: 8px;
+    color: var(--accent);
 }
 
 .card p {
-  color: #ccc;
+    font-size: 14px;
+    color: var(--muted);
 }
 
-/* ------------------------------ */
-/* Llistes                        */
-/* ------------------------------ */
+/* ----------------------------- */
+/* LISTAS */
+/* ----------------------------- */
 
 .list {
-  padding-left: 20px;
+    list-style: none;
+    padding-left: 0;
 }
 
 .list li {
-  margin-bottom: 6px;
-  color: #bbb;
+    padding: 4px 0;
+    font-size: 14px;
+    color: var(--muted);
 }
 
-/* ------------------------------ */
-/* Peu de pàgina estil Netflix    */
-/* ------------------------------ */
+/* ----------------------------- */
+/* BOTONES */
+/* ----------------------------- */
+
+.button {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 16px;
+    background: var(--accent);
+    color: #0b1120;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s ease;
+}
+
+.button:hover {
+    background: #0ea5e9;
+}
+
+/* ----------------------------- */
+/* FOOTER */
+/* ----------------------------- */
 
 .footer {
-  margin-top: 50px;
-  padding: 20px;
-  text-align: center;
-  background: #000;
-  color: #aaa;
-  border-top: 3px solid #e50914;
+    margin-top: 40px;
+    padding: 20px;
+    text-align: center;
+    color: var(--muted);
+    border-top: 1px solid rgba(148,163,184,0.25);
+    background: linear-gradient(to top, #020617, transparent);
 }

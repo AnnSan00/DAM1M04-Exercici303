@@ -104,6 +104,8 @@ app.get('/', async (req, res) => {
 app.get('/movies', async (req, res) => {
   try {
     // Pel·lícules (FIlM)
+    //ORDER BY film_id DESC (para mostrar les últimes afegides)
+
     const films = await db.query(`
       SELECT film_id, title, description, release_year, length
       FROM film
@@ -246,25 +248,33 @@ app.get('/movie/edit/:id', async (req, res) => {
   }
 });
 
+
 /* ---------------------------------------------------------
    RUTA: POST /editarPeli
-   Actualitzar pel·lícula
+   Actualitzar les dades escrites al formulari
 --------------------------------------------------------- */
 app.post('/editarPeli', async (req, res) => {
   try {
+    // 1. Recollim les dades que l'usuari ha ESCRIT al formulari
     const { film_id, title, description, release_year, length, language_id } = req.body;
 
+    // 2. Executem la consulta SQL d'actualització
     await db.query(`
       UPDATE film
-      SET title = ?, description = ?, release_year = ?, length = ?, language_id = ?
+      SET title = ?, 
+          description = ?, 
+          release_year = ?, 
+          length = ?, 
+          language_id = ?
       WHERE film_id = ?;
     `, [title, description, release_year, length, language_id, film_id]);
 
+    // 3. Un cop "desat", tornem a la fitxa de la pel·lícula per veure els canvis
     res.redirect('/movies/' + film_id);
 
   } catch (err) {
-    console.error(err);
-    res.status(500).send("Error editant la pel·lícula");
+    console.error("Error al desar les dades:", err);
+    res.status(500).send("No s'han pogut desar els canvis.");
   }
 });
 
@@ -320,6 +330,29 @@ app.get('/customers', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send('Error consultant la base de dades');
+  }
+});
+
+/* ---------------------------------------------------------
+   RUTA: /informe
+   Estructura obligatòria
+--------------------------------------------------------- */
+app.get('/informe', async (req, res) => {
+  try {
+    // Podem posar, per exemple, un resum de totals
+    const totalMovies = await db.query('SELECT COUNT(*) as total FROM film');
+    const totalCustomers = await db.query('SELECT COUNT(*) as total FROM customer');
+
+    res.render('informe', {
+      common: commonData,
+      stats: {
+        movies: totalMovies[0].total,
+        customers: totalCustomers[0].total
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error generant l informe');
   }
 });
 
