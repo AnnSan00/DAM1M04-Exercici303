@@ -109,6 +109,7 @@ app.get('/movies', async (req, res) => {
     const films = await db.query(`
       SELECT film_id, title, description, release_year, length
       FROM film
+      ORDER BY film_id DESC
       LIMIT 15;
     `);
 //actores
@@ -191,25 +192,27 @@ app.get('/movie/add', async (req, res) => {
 
 /* ---------------------------------------------------------
    RUTA: POST /afegirPeli
-   Crear pel·lícula
+   Crear pel·lícula amb camps obligatoris de Sakila
 --------------------------------------------------------- */
 app.post('/afegirPeli', async (req, res) => {
   try {
-    const title = req.body.title;
-    const description = req.body.description;
-    const release_year = req.body.release_year;
-    const length = req.body.length;
-    const language_id = req.body.language_id;
-// Insertar nueva película
+    // 1. Recollim les dades del formulari
+    const { title, description, release_year, length, language_id } = req.body;
+
+    // 2. Executem l'INSERT amb els valors fixos per evitar errors de "Field 'X' doesn't have a default value"
     await db.query(`
-      INSERT INTO film (title, description, release_year, length, language_id)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO film (
+        title, description, release_year, length, language_id, 
+        rental_duration, rental_rate, replacement_cost
+      )
+      VALUES (?, ?, ?, ?, ?, 3, 4.99, 19.99)
     `, [title, description, release_year, length, language_id]);
 
+    // 3. Si tot va bé, tornem a la llista
     res.redirect('/movies');
   } catch (err) {
-    console.error(err);
-    return res.status(500).send('Error afegint pel·lícula');
+    console.error("Error al insertar en MySQL:", err);
+    res.status(500).send('Error afegint pel·lícula: ' + err.message);
   }
 });
 
