@@ -26,7 +26,7 @@ if (!isProxmox) {
  else {
   db.init({
     host: '127.0.0.1',
-    port: 3306,   // IMPORTANT: túnel SSH
+    port: 3306,   
     user: 'super',
     password: '1234',
     database: 'sakila'
@@ -39,7 +39,10 @@ app.use(express.urlencoded({ extended: true }));
 
 // Disable cache
 app.use((req, res, next) => {
-  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Surrogate-Control', 'no-store');
   next();
 });
 
@@ -54,7 +57,7 @@ hbs.registerHelper('gt', (a, b) => a > b);
 // Partials
 hbs.registerPartials(path.join(__dirname, 'views', 'partials'));
 
-// Dades comunes
+// Dades comunes (common.json)
 const commonData = JSON.parse(
   fs.readFileSync(path.join(__dirname, 'data', 'common.json'), 'utf8')
 );
@@ -65,6 +68,7 @@ const commonData = JSON.parse(
 --------------------------------------------------------- */
 app.get('/', async (req, res) => {
   try {
+    // Obtenir les dades de la base de dades
     // Pel·lícules
     const movies = await db.query(`
       SELECT film_id, title, release_year
@@ -77,7 +81,8 @@ app.get('/', async (req, res) => {
       FROM category
       LIMIT 5;
     `);
-
+    
+    // Renderitzar la plantilla amb les dades
     res.render('index', {
       common: commonData,
       movies: db.table_to_json(movies, {
@@ -109,7 +114,7 @@ app.get('/movies', async (req, res) => {
     const films = await db.query(`
       SELECT film_id, title, description, release_year, length
       FROM film
-      ORDER BY film_id DESC
+      ORDER BY film_id ASC
       LIMIT 15;
     `);
 //actores
