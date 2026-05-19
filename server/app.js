@@ -114,7 +114,7 @@ app.get('/movies', async (req, res) => {
     const films = await db.query(`
       SELECT film_id, title, description, release_year, length
       FROM film
-      ORDER BY film_id ASC
+      ORDER BY film_id DESC
       LIMIT 15;
     `);
 //actores
